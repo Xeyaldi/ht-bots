@@ -16,14 +16,14 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
             color: var(--tg-theme-text-color);
             margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center;
         }
 
         header { text-align: center; margin-bottom: 30px; }
-        header h1 { font-size: 32px; color: var(--tg-theme-button-color); text-transform: uppercase; letter-spacing: 2px; margin: 0; }
+        header h1 { font-size: 32px; color: var(--tg-theme-button-color); text-transform: uppercase; margin: 0; }
 
         .bot-card {
             background-color: var(--tg-theme-bg-color);
@@ -32,7 +32,7 @@
         }
 
         .bot-name { font-size: 20px; font-weight: bold; margin-bottom: 8px; display: block; }
-        .bot-desc { font-size: 14px; color: var(--tg-theme-hint-color); line-height: 1.5; margin-bottom: 15px; }
+        .bot-desc { font-size: 14px; color: var(--tg-theme-hint-color); margin-bottom: 15px; }
 
         .btn-link {
             display: inline-block; background-color: var(--tg-theme-button-color);
@@ -41,7 +41,6 @@
             width: calc(100% - 40px); text-align: center;
         }
 
-        /* YENİ: Ulduz Reytinqi */
         .rating-input { margin: 10px 0; display: flex; gap: 5px; }
         .star-btn { font-size: 24px; cursor: pointer; color: #ccc; }
         .star-btn.active { color: #ffcc00; }
@@ -62,16 +61,21 @@
         .comment-item { margin-top: 10px; padding: 8px; background: #f9f9f9; border-radius: 8px; font-size: 13px; }
         .comment-header { display: flex; justify-content: space-between; font-weight: bold; color: var(--tg-theme-button-color); }
         
-        /* YENİ: Tepkilər */
         .reactions { display: flex; gap: 8px; margin-top: 5px; }
         .react-btn { background: #eee; border: none; border-radius: 10px; padding: 2px 6px; font-size: 12px; cursor: pointer; }
+
+        .contact-footer {
+            margin-top: 10px; margin-bottom: 30px; display: flex; gap: 25px;
+            justify-content: center; align-items: center; width: 100%;
+        }
+        .contact-icon { width: 35px; height: 35px; }
     </style>
 </head>
 <body>
 
     <header>
         <h1>HT BOTS</h1>
-        <p style="color: var(--tg-theme-hint-color);">Sizin üçün ən faydalı botlar bir yerdə</p>
+        <p style="color: var(--tg-theme-hint-color);">Keyfiyyətli Botlar Dünyası</p>
     </header>
 
     <div class="bot-card">
@@ -93,8 +97,8 @@
     </div>
 
     <div class="bot-card">
-        <span class="bot-name">🤫 Sətir İçi Gizli Mesaj</span>
-        <p class="bot-desc">Mesajları gizli şəkildə göndərmək üçün.</p>
+        <span class="bot-name">🤫 Gizli Mesaj Botu</span>
+        <p class="bot-desc">Sətir içi gizli mesaj göndərmək üçün.</p>
         <a href="https://t.me/gmsjrobot" class="btn-link">Botu Aç</a>
         <div class="comment-section">
             <div class="rating-input" id="stars-gmsj">
@@ -112,7 +116,7 @@
 
     <div class="bot-card">
         <span class="bot-name">🎮 Söz Oyunu Botu</span>
-        <p class="bot-desc">Dostlarınızla söz ehtiyatınızı yoxlayın.</p>
+        <p class="bot-desc">Əyləncəli söz oyunu.</p>
         <a href="https://t.me/Soz_oyunu_bot" class="btn-link">Botu Aç</a>
         <div class="comment-section">
             <div class="rating-input" id="stars-soz">
@@ -128,6 +132,66 @@
         </div>
     </div>
 
+    <div class="bot-card">
+        <span class="bot-name">📥 Media Downloader</span>
+        <p class="bot-desc">Sosial şəbəkələrdən video yükləyici.</p>
+        <a href="https://t.me/Ht_media_video_downloader_bot" class="btn-link">Botu Aç</a>
+        <div class="comment-section">
+            <div class="rating-input" id="stars-media">
+                <span onclick="setRating('media', 1)" class="star-btn">★</span>
+                <span onclick="setRating('media', 2)" class="star-btn">★</span>
+                <span onclick="setRating('media', 3)" class="star-btn">★</span>
+                <span onclick="setRating('media', 4)" class="star-btn">★</span>
+                <span onclick="setRating('media', 5)" class="star-btn">★</span>
+            </div>
+            <input type="text" id="input-media" class="comment-input" placeholder="Rəy yazın...">
+            <button onclick="sendComment('media')" class="comment-btn">Göndər</button>
+            <div id="list-media"></div>
+        </div>
+    </div>
+
+    <div class="bot-card">
+        <span class="bot-name">🏷️ Tağ və Chatbot</span>
+        <p class="bot-desc">Qruplarda kütləvi tağ və söhbət.</p>
+        <a href="https://t.me/Nunum_tag_bot" class="btn-link">Botu Aç</a>
+        <div class="comment-section">
+            <div class="rating-input" id="stars-tag">
+                <span onclick="setRating('tag', 1)" class="star-btn">★</span>
+                <span onclick="setRating('tag', 2)" class="star-btn">★</span>
+                <span onclick="setRating('tag', 3)" class="star-btn">★</span>
+                <span onclick="setRating('tag', 4)" class="star-btn">★</span>
+                <span onclick="setRating('tag', 5)" class="star-btn">★</span>
+            </div>
+            <input type="text" id="input-tag" class="comment-input" placeholder="Rəy yazın...">
+            <button onclick="sendComment('tag')" class="comment-btn">Göndər</button>
+            <div id="list-tag"></div>
+        </div>
+    </div>
+
+    <div class="bot-card">
+        <span class="bot-name">📊 Message Score Bot</span>
+        <p class="bot-desc">Qruplardakı statistikaları ölçür.</p>
+        <a href="https://t.me/message_scor_aze_bot" class="btn-link">Botu Aç</a>
+        <div class="comment-section">
+            <div class="rating-input" id="stars-score">
+                <span onclick="setRating('score', 1)" class="star-btn">★</span>
+                <span onclick="setRating('score', 2)" class="star-btn">★</span>
+                <span onclick="setRating('score', 3)" class="star-btn">★</span>
+                <span onclick="setRating('score', 4)" class="star-btn">★</span>
+                <span onclick="setRating('score', 5)" class="star-btn">★</span>
+            </div>
+            <input type="text" id="input-score" class="comment-input" placeholder="Rəy yazın...">
+            <button onclick="sendComment('score')" class="comment-btn">Göndər</button>
+            <div id="list-score"></div>
+        </div>
+    </div>
+
+    <div class="contact-footer">
+        <a href="https://wa.me/994554752909" target="_blank"><img class="contact-icon" src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"></a>
+        <a href="https://t.me/kullaniciadidi" target="_blank"><img class="contact-icon" src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg"></a>
+        <a href="https://instagram.com/xeyall_032" target="_blank"><img class="contact-icon" src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg"></a>
+    </div>
+
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
@@ -140,8 +204,7 @@
 
         function setRating(botId, score) {
             currentRatings[botId] = score;
-            const stars = document.querySelectorAll(`#stars-${botId} .star-btn`);
-            stars.forEach((s, i) => s.classList.toggle('active', i < score));
+            document.querySelectorAll(`#stars-${botId} .star-btn`).forEach((s, i) => s.classList.toggle('active', i < score));
         }
 
         async function sendComment(botId) {
@@ -150,12 +213,10 @@
             if (!text) return;
 
             const user = tg.initDataUnsafe.user || { first_name: "İstifadəçi" };
-            const initials = user.first_name.charAt(0).toUpperCase();
-
             await supabaseClient.from('comments').insert([{
                 bot_id: botId,
                 username: user.first_name,
-                user_initials: initials,
+                user_initials: user.first_name.charAt(0).toUpperCase(),
                 comment_text: text,
                 star_rating: currentRatings[botId] || 0
             }]);
@@ -173,29 +234,24 @@
 
         async function loadComments() {
             const { data } = await supabaseClient.from('comments').select('*').order('created_at', { ascending: false });
-            ['lark', 'gmsj', 'soz'].forEach(id => {
+            ['lark', 'gmsj', 'soz', 'media', 'tag', 'score'].forEach(id => {
                 const list = document.getElementById('list-' + id);
                 if(list) {
-                    list.innerHTML = '';
-                    data.filter(c => c.bot_id === id).forEach(item => {
-                        list.innerHTML += `
-                            <div class="comment-item">
-                                <div class="comment-header">
-                                    <span>${item.username}</span>
-                                    <span style="color:#ffcc00">${'★'.repeat(item.star_rating)}</span>
-                                </div>
-                                <div>${item.comment_text}</div>
-                                <div class="reactions">
-                                    <button class="react-btn" onclick="addReaction('${item.id}', 'star')">💫 ${item.reaction_star || 0}</button>
-                                    <button class="react-btn" onclick="addReaction('${item.id}', 'heart')">💛 ${item.reaction_heart || 0}</button>
-                                    <button class="react-btn" onclick="addReaction('${item.id}', 'goat')">🐐 ${item.reaction_goat || 0}</button>
-                                </div>
-                            </div>`;
-                    });
+                    list.innerHTML = data.filter(c => c.bot_id === id).map(item => `
+                        <div class="comment-item">
+                            <div class="comment-header"><span>${item.username}</span><span style="color:#ffcc00">${'★'.repeat(item.star_rating)}</span></div>
+                            <div>${item.comment_text}</div>
+                            <div class="reactions">
+                                <button class="react-btn" onclick="addReaction('${item.id}', 'star')">💫 ${item.reaction_star || 0}</button>
+                                <button class="react-btn" onclick="addReaction('${item.id}', 'heart')">💛 ${item.reaction_heart || 0}</button>
+                                <button class="react-btn" onclick="addReaction('${item.id}', 'goat')">🐐 ${item.reaction_goat || 0}</button>
+                            </div>
+                        </div>`).join('');
                 }
             });
         }
         loadComments();
     </script>
 </body>
-</html>
+                                                                                                                                                                                   </html>
+                                                                                                                                                                                   
