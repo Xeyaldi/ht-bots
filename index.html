@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HT BOTS - Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --tg-theme-bg-color: #fff;
@@ -18,96 +19,52 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
             color: var(--tg-theme-text-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            font-size: 32px;
-            color: var(--tg-theme-button-color);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 0;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 { font-size: 32px; color: var(--tg-theme-button-color); text-transform: uppercase; letter-spacing: 2px; margin: 0; }
 
         .bot-card {
             background-color: var(--tg-theme-bg-color);
-            width: 100%;
-            max-width: 400px;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            width: 100%; max-width: 400px; border-radius: 15px;
+            padding: 20px; margin-bottom: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
-        .bot-name {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .bot-desc {
-            font-size: 14px;
-            color: var(--tg-theme-hint-color);
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
+        .bot-name { font-size: 20px; font-weight: bold; margin-bottom: 8px; display: block; }
+        .bot-desc { font-size: 14px; color: var(--tg-theme-hint-color); line-height: 1.5; margin-bottom: 15px; }
 
         .btn-link {
-            display: inline-block;
-            background-color: var(--tg-theme-button-color);
-            color: var(--tg-theme-button-text-color);
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            width: calc(100% - 40px);
-            text-align: center;
+            display: inline-block; background-color: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color); text-decoration: none;
+            padding: 10px 20px; border-radius: 8px; font-weight: 600;
+            width: calc(100% - 40px); text-align: center;
         }
 
-        .comment-section {
-            margin-top: 15px;
-            border-top: 1px solid var(--tg-theme-hint-color);
-            padding-top: 10px;
-        }
+        /* YENİ: Ulduz Reytinqi */
+        .rating-input { margin: 10px 0; display: flex; gap: 5px; }
+        .star-btn { font-size: 24px; cursor: pointer; color: #ccc; }
+        .star-btn.active { color: #ffcc00; }
 
+        .comment-section { margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px; }
         .comment-input {
-            width: 100%;
-            border: 1px solid var(--tg-theme-hint-color);
-            border-radius: 5px;
-            padding: 8px;
-            background: transparent;
-            color: var(--tg-theme-text-color);
-            box-sizing: border-box;
-            margin-bottom: 5px;
+            width: 100%; border: 1px solid var(--tg-theme-hint-color);
+            border-radius: 5px; padding: 8px; background: transparent;
+            color: var(--tg-theme-text-color); box-sizing: border-box; margin-bottom: 5px;
         }
 
         .comment-btn {
-            background: none;
-            border: 1px solid var(--tg-theme-button-color);
-            color: var(--tg-theme-button-color);
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 12px;
+            background: none; border: 1px solid var(--tg-theme-button-color);
+            color: var(--tg-theme-button-color); padding: 5px 10px;
+            border-radius: 5px; cursor: pointer; font-size: 12px;
         }
 
-        .comments-list {
-            font-size: 13px;
-            margin-top: 10px;
-            max-height: 100px;
-            overflow-y: auto;
-        }
+        .comment-item { margin-top: 10px; padding: 8px; background: #f9f9f9; border-radius: 8px; font-size: 13px; }
+        .comment-header { display: flex; justify-content: space-between; font-weight: bold; color: var(--tg-theme-button-color); }
+        
+        /* YENİ: Tepkilər */
+        .reactions { display: flex; gap: 8px; margin-top: 5px; }
+        .react-btn { background: #eee; border: none; border-radius: 10px; padding: 2px 6px; font-size: 12px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -119,79 +76,126 @@
 
     <div class="bot-card">
         <span class="bot-name">🎵 Lark Player Bot</span>
-        <p class="bot-desc">İstədiyiniz musiqiləri axtarıb tapmaq və dinləmək üçün mükəmməl köməkçi.</p>
-        <a href="https://t.me/lark_player_bot" class="btn-link">Botu Aç</a>
+        <p class="bot-desc">Musiqi axtarış və dinləmə botu.</p>
+        <a href="https://t.me/lark_player_robot" class="btn-link">Botu Aç</a>
         <div class="comment-section">
-            <input type="text" class="comment-input" placeholder="Rəy yazın...">
-            <button class="comment-btn">Göndər</button>
-            <div class="comments-list">Bura ilk rəyi sən yaz!</div>
+            <div class="rating-input" id="stars-lark">
+                <span onclick="setRating('lark', 1)" class="star-btn">★</span>
+                <span onclick="setRating('lark', 2)" class="star-btn">★</span>
+                <span onclick="setRating('lark', 3)" class="star-btn">★</span>
+                <span onclick="setRating('lark', 4)" class="star-btn">★</span>
+                <span onclick="setRating('lark', 5)" class="star-btn">★</span>
+            </div>
+            <input type="text" id="input-lark" class="comment-input" placeholder="Rəy yazın...">
+            <button onclick="sendComment('lark')" class="comment-btn">Göndər</button>
+            <div id="list-lark"></div>
         </div>
     </div>
 
     <div class="bot-card">
         <span class="bot-name">🤫 Sətir İçi Gizli Mesaj</span>
-        <p class="bot-desc">Qruplarda və şəxsi söhbətlərdə mesajları gizli (inline) şəkildə göndərmək üçün.</p>
+        <p class="bot-desc">Mesajları gizli şəkildə göndərmək üçün.</p>
         <a href="https://t.me/gmsjrobot" class="btn-link">Botu Aç</a>
         <div class="comment-section">
-            <input type="text" class="comment-input" placeholder="Rəy yazın...">
-            <button class="comment-btn">Göndər</button>
-            <div class="comments-list"></div>
+            <div class="rating-input" id="stars-gmsj">
+                <span onclick="setRating('gmsj', 1)" class="star-btn">★</span>
+                <span onclick="setRating('gmsj', 2)" class="star-btn">★</span>
+                <span onclick="setRating('gmsj', 3)" class="star-btn">★</span>
+                <span onclick="setRating('gmsj', 4)" class="star-btn">★</span>
+                <span onclick="setRating('gmsj', 5)" class="star-btn">★</span>
+            </div>
+            <input type="text" id="input-gmsj" class="comment-input" placeholder="Rəy yazın...">
+            <button onclick="sendComment('gmsj')" class="comment-btn">Göndər</button>
+            <div id="list-gmsj"></div>
         </div>
     </div>
 
     <div class="bot-card">
         <span class="bot-name">🎮 Söz Oyunu Botu</span>
-        <p class="bot-desc">Dostlarınızla və ya təkbaşına söz ehtiyatınızı yoxlayın. Əyləncəli vaxt keçirin!</p>
+        <p class="bot-desc">Dostlarınızla söz ehtiyatınızı yoxlayın.</p>
         <a href="https://t.me/Soz_oyunu_bot" class="btn-link">Botu Aç</a>
         <div class="comment-section">
-            <input type="text" class="comment-input" placeholder="Rəy yazın...">
-            <button class="comment-btn">Göndər</button>
-            <div class="comments-list"></div>
-        </div>
-    </div>
-
-    <div class="bot-card">
-        <span class="bot-name">📥 HT Media Downloader</span>
-        <p class="bot-desc">Instagram, TikTok və digər sosial şəbəkələrdən videoları saniyələr içində yükləyin.</p>
-        <a href="https://t.me/Ht_media_video_downloader_bot" class="btn-link">Botu Aç</a>
-        <div class="comment-section">
-            <input type="text" class="comment-input" placeholder="Rəy yazın...">
-            <button class="comment-btn">Göndər</button>
-            <div class="comments-list"></div>
-        </div>
-    </div>
-
-    <div class="bot-card">
-        <span class="bot-name">🏷️ Tağ və Chatbot Botu</span>
-        <p class="bot-desc">Qruplarda kütləvi tağ etmək və süni intellektlə söhbət etmək üçün ideal bot.</p>
-        <a href="https://t.me/Nunum_tag_bot" class="btn-link">Botu Aç</a>
-        <div class="comment-section">
-            <input type="text" class="comment-input" placeholder="Rəy yazın...">
-            <button class="comment-btn">Göndər</button>
-            <div class="comments-list"></div>
+            <div class="rating-input" id="stars-soz">
+                <span onclick="setRating('soz', 1)" class="star-btn">★</span>
+                <span onclick="setRating('soz', 2)" class="star-btn">★</span>
+                <span onclick="setRating('soz', 3)" class="star-btn">★</span>
+                <span onclick="setRating('soz', 4)" class="star-btn">★</span>
+                <span onclick="setRating('soz', 5)" class="star-btn">★</span>
+            </div>
+            <input type="text" id="input-soz" class="comment-input" placeholder="Rəy yazın...">
+            <button onclick="sendComment('soz')" class="comment-btn">Göndər</button>
+            <div id="list-soz"></div>
         </div>
     </div>
 
     <script>
-        // Telegram rənglərinə uyğunlaşdırma
         const tg = window.Telegram.WebApp;
         tg.expand();
-        
-        // Rəy yazma funksiyası (Visual olaraq işləyir)
-        document.querySelectorAll('.comment-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const input = this.parentElement.querySelector('.comment-input');
-                const list = this.parentElement.querySelector('.comments-list');
-                if(input.value.trim() !== "") {
-                    const newComment = document.createElement('div');
-                    newComment.textContent = "Siz: " + input.value;
-                    newComment.style.borderBottom = "1px solid #eee";
-                    newComment.style.padding = "5px 0";
-                    list.prepend(newComment);
-                    input.value = "";
+
+        const SUPABASE_URL = 'https://nuzxmyezumxtubdzglzb.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_mm7mgkE3li7yVCBvGspE5A_R0eY5Ze_';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let currentRatings = {};
+
+        function setRating(botId, score) {
+            currentRatings[botId] = score;
+            const stars = document.querySelectorAll(`#stars-${botId} .star-btn`);
+            stars.forEach((s, i) => s.classList.toggle('active', i < score));
+        }
+
+        async function sendComment(botId) {
+            const input = document.getElementById('input-' + botId);
+            const text = input.value.trim();
+            if (!text) return;
+
+            const user = tg.initDataUnsafe.user || { first_name: "İstifadəçi" };
+            const initials = user.first_name.charAt(0).toUpperCase();
+
+            await supabaseClient.from('comments').insert([{
+                bot_id: botId,
+                username: user.first_name,
+                user_initials: initials,
+                comment_text: text,
+                star_rating: currentRatings[botId] || 0
+            }]);
+
+            input.value = '';
+            setRating(botId, 0);
+            loadComments();
+        }
+
+        async function addReaction(commentId, type) {
+            const { data } = await supabaseClient.from('comments').select(`reaction_${type}`).eq('id', commentId).single();
+            await supabaseClient.from('comments').update({ [`reaction_${type}`]: (data[`reaction_${type}`] || 0) + 1 }).eq('id', commentId);
+            loadComments();
+        }
+
+        async function loadComments() {
+            const { data } = await supabaseClient.from('comments').select('*').order('created_at', { ascending: false });
+            ['lark', 'gmsj', 'soz'].forEach(id => {
+                const list = document.getElementById('list-' + id);
+                if(list) {
+                    list.innerHTML = '';
+                    data.filter(c => c.bot_id === id).forEach(item => {
+                        list.innerHTML += `
+                            <div class="comment-item">
+                                <div class="comment-header">
+                                    <span>${item.username}</span>
+                                    <span style="color:#ffcc00">${'★'.repeat(item.star_rating)}</span>
+                                </div>
+                                <div>${item.comment_text}</div>
+                                <div class="reactions">
+                                    <button class="react-btn" onclick="addReaction('${item.id}', 'star')">💫 ${item.reaction_star || 0}</button>
+                                    <button class="react-btn" onclick="addReaction('${item.id}', 'heart')">💛 ${item.reaction_heart || 0}</button>
+                                    <button class="react-btn" onclick="addReaction('${item.id}', 'goat')">🐐 ${item.reaction_goat || 0}</button>
+                                </div>
+                            </div>`;
+                    });
                 }
             });
-        });
+        }
+        loadComments();
     </script>
 </body>
 </html>
